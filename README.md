@@ -1,59 +1,48 @@
-# Worker + D1 Database
+# Drawing Talk
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/d1-template)
+Cloudflare Workers 기반의 간단한 이미지 업로드 보드입니다.
 
-![Worker + D1 Template Preview](https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/cb7cb0a9-6102-4822-633c-b76b7bb25900/public)
+- 실제 이미지 파일은 `R2`에 저장
+- 이미지 이름, 원본 파일명, 태그, 업로드 시각은 `D1`에 저장
+- 업로드 후 메인 페이지에서 최근 이미지를 카드 형태로 확인
 
-<!-- dash-content-start -->
+## Routes
 
-D1 is Cloudflare's native serverless SQL database ([docs](https://developers.cloudflare.com/d1/)). This project demonstrates using a Worker with a D1 binding to execute a SQL statement. A simple frontend displays the result of this query:
+- `GET /`: 업로드 폼과 최근 이미지 목록
+- `POST /upload`: 이미지 업로드 및 메타데이터 저장
+- `GET /images/:id`: 업로드된 이미지 바이너리 반환
 
-```SQL
-SELECT * FROM comments LIMIT 3;
+## Local Setup
+
+1. 의존성 설치
+
+```bash
+npm install
 ```
 
-The D1 database is initialized with a `comments` table and this data:
+2. D1 마이그레이션 적용
 
-```SQL
-INSERT INTO comments (author, content)
-VALUES
-    ('Kristian', 'Congrats!'),
-    ('Serena', 'Great job!'),
-    ('Max', 'Keep up the good work!')
-;
+```bash
+npx wrangler d1 migrations apply DB --local
 ```
 
-> [!IMPORTANT]
-> When using C3 to create this project, select "no" when it asks if you want to deploy. You need to follow this project's [setup steps](https://github.com/cloudflare/templates/tree/main/d1-template#setup-steps) before deploying.
+3. 로컬 실행
 
-<!-- dash-content-end -->
-
-## Getting Started
-
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
-
-```
-npm create cloudflare@latest -- --template=cloudflare/templates/d1-template
+```bash
+npm run dev
 ```
 
-A live public deployment of this template is available at [https://d1-template.templates.workers.dev](https://d1-template.templates.workers.dev)
+## Cloudflare Setup
 
-## Setup Steps
+`wrangler.json`에는 다음 바인딩이 필요합니다.
 
-1. Install the project dependencies with a package manager of your choice:
-   ```bash
-   npm install
-   ```
-2. Create a [D1 database](https://developers.cloudflare.com/d1/get-started/) with the name "d1-template-database":
-   ```bash
-   npx wrangler d1 create d1-template-database
-   ```
-   ...and update the `database_id` field in `wrangler.json` with the new database ID.
-3. Run the following db migration to initialize the database (notice the `migrations` directory in this project):
-   ```bash
-   npx wrangler d1 migrations apply --remote d1-template-database
-   ```
-4. Deploy the project!
-   ```bash
-   npx wrangler deploy
-   ```
+- `DB`: D1 database
+- `IMAGES`: R2 bucket (`drawing-talk-images`)
+
+배포 전 준비:
+
+```bash
+npx wrangler r2 bucket create drawing-talk-images
+npx wrangler d1 migrations apply DB --remote
+npm run deploy
+```

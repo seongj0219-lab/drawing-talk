@@ -10,6 +10,12 @@
 			"database_name": "images"
 		}
 	],
+	"r2_buckets": [
+		{
+			"binding": "IMAGES",
+			"bucket_name": "drawing-talk-images"
+		}
+	],
 	"observability": {
 		"enabled": true
 	}
