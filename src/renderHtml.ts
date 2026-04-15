@@ -208,6 +208,11 @@ export function renderHtml({ images, flash }: RenderHtmlOptions) {
 						box-shadow: 0 14px 28px rgba(181, 79, 34, 0.24);
 					}
 
+					.password-input {
+						padding: 10px 12px;
+						font-size: 13px;
+					}
+
 					.flash {
 						margin-bottom: 18px;
 						padding: 14px 18px;
@@ -266,6 +271,10 @@ export function renderHtml({ images, flash }: RenderHtmlOptions) {
 						padding: 16px;
 					}
 
+					.card-body form {
+						display: block;
+					}
+
 					.card-body h3 {
 						margin: 0 0 6px;
 						font-size: 1rem;
@@ -293,6 +302,29 @@ export function renderHtml({ images, flash }: RenderHtmlOptions) {
 						color: var(--accent-strong);
 						font-size: 12px;
 						font-weight: 700;
+					}
+
+					.card-actions {
+						display: flex;
+						justify-content: flex-end;
+						margin-top: 16px;
+					}
+
+					.delete-form {
+						display: flex;
+						gap: 10px;
+						align-items: center;
+						width: 100%;
+						justify-content: flex-end;
+					}
+
+					.delete-button {
+						width: auto;
+						padding: 10px 14px;
+						font-size: 12px;
+						font-weight: 700;
+						background: linear-gradient(135deg, #3b3027, #1e1915);
+						box-shadow: none;
 					}
 
 					.empty {
@@ -362,6 +394,11 @@ export function renderHtml({ images, flash }: RenderHtmlOptions) {
 									<input type="text" name="tags" placeholder="portrait, sketch, warm-tone" />
 									<span class="hint">쉼표로 구분하면 여러 태그를 저장합니다.</span>
 								</label>
+								<label>
+									<span>관리자 비밀번호</span>
+									<input class="password-input" type="password" name="password" placeholder="비밀번호 입력" required />
+									<span class="hint">업로드와 삭제는 같은 비밀번호를 사용합니다.</span>
+								</label>
 								<button type="submit">업로드 저장</button>
 							</form>
 						</section>
@@ -399,6 +436,12 @@ function renderImageCard(image: ImageView): string {
 				<p class="meta">${escapeHtml(image.originalFilename)}</p>
 				<p class="meta">${formatDate(image.createdAt)} · ${formatSize(image.sizeBytes)}</p>
 				${tags}
+				<div class="card-actions">
+					<form class="delete-form" method="post" action="/images/${escapeAttribute(image.id)}/delete" onsubmit="return confirm('이 이미지를 삭제할까요?');">
+						<input class="password-input" type="password" name="password" placeholder="비밀번호" required />
+						<button class="delete-button" type="submit">삭제</button>
+					</form>
+				</div>
 			</div>
 		</article>
 	`;
