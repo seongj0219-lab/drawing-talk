@@ -1,0 +1,16 @@
+{
+	"compatibility_date": "2025-10-08",
+	"main": "src/index.ts",
+	"name": "drawing-talk",
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "6e3a30f6-186b-4192-8408-2811dc1e3977",
+			"database_name": "images"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}
